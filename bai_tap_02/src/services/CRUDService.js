@@ -1,112 +1,78 @@
 "use strict";
 
 const bcrypt = require("bcryptjs");
-const db = require("../models/index");
+const User = require("../models/user");
 
-const salt = bcrypt.genSaltSync(10);
-
-// Create a new user
-let createNewUser = async (data) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let hashPasswordFromBcrypt = await hashUserPassword(data.password);
-      await db.User.create({
-        email: data.email,
-        password: hashPasswordFromBcrypt,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        address: data.address,
-        phoneNumber: data.phoneNumber,
-        gender: data.gender === "1" ? true : false,
-        roleId: data.roleId,
-      });
-
-      resolve("OK create a new user successful");
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
+const saltRounds = 10;
 
 let hashUserPassword = (password) => {
-  return new Promise((resolve, reject) => {
-    try {
-      let hashPassword = bcrypt.hashSync("B4c0//", salt);
-      resolve(hashPassword);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return bcrypt.hash(password, saltRounds);
 };
 
-// Get all users
-let getAllUsers = () => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let users = await db.User.findAll({ raw: true });
-      resolve(users);
-    } catch (e) {
-      reject(e);
-    }
+// Create a new user (Mongoose)
+let createNewUser = async (data) => {
+  try {
+    const hashed = await hashUserPassword(data.password);
+    const user = new User({
+      email: data.email,
+      password: hashed,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      address: data.address,
+      phoneNumber: data.phoneNumber,
+      gender: data.gender === "1" ? true : false,
+      roleId: data.roleId,
+      positionId: data.positionId,
+      image: data.image,
+    });
+    await user.save();
+    return "OK create a new user successful";
+  } catch (e) {
+    throw e;
+  }
+};
+
+// Get all users (without password)
+let getAllUsers = async () => {
+  const users = await User.find({}).lean();
+  return users.map((u) => {
+    delete u.password;
+    return u;
   });
 };
 
 // Get user by id
-let getUserInfoById = (userId) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let user = await db.User.findOne({ where: { id: userId }, raw: true });
-      if (user) {
-        resolve(user);
-      } else {
-        resolve([]);
-      }
-    } catch (e) {
-      reject(e);
-    }
-  });
+let getUserInfoById = async (userId) => {
+  const user = await User.findById(userId).lean();
+  if (!user) return {};
+  delete user.password;
+  return user;
 };
 
 // Update user data
-let updateUser = (data) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let user = await db.User.findOne({ where: { id: data.id } });
-      if (user) {
-        user.firstName = data.firstName;
-        user.lastName = data.lastName;
-        user.address = data.address;
-        await user.save();
-        let allUsers = await db.User.findAll();
-        resolve(allUsers);
-      } else {
-        resolve();
-      }
-    } catch (e) {
-      reject(e);
-    }
-  });
+let updateUserData = async (data) => {
+  const update = {
+    firstName: data.firstName,
+    lastName: data.lastName,
+    address: data.address,
+    roleId: data.roleId,
+    positionId: data.positionId,
+  };
+  if (data.image) update.image = data.image;
+  await User.findByIdAndUpdate(data.id, update, { new: true });
+  // return updated list
+  return getAllUsers();
 };
 
 // Delete user by id
-let deleteUserById = (userId) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let user = await db.User.findOne({ where: { id: userId } });
-      if (user) {
-        await user.destroy();
-      }
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+let deleteUserById = async (userId) => {
+  await User.findByIdAndDelete(userId);
 };
 
 module.exports = {
-  createNewUser: createNewUser,
-  getAllUsers: createNewUser,
-  getUserInfoById: createNewUser,
-  updateUser: updateUser,
-  deleteUserById: deleteUserById,
+  createNewUser,
+  getAllUsers,
+  getUserInfoById,
+  updateUserData,
+  deleteUserById,
 };

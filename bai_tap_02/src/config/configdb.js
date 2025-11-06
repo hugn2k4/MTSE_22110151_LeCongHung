@@ -1,15 +1,18 @@
-const { Sequelize } = require("sequelize");
-const sequelize = new Sequelize("node_fulltask", "root", "123456", {
-  host: "localhost",
-  dialect: "mysql",
-  logging: false,
-});
-let connectDB = async () => {
+"use strict";
+
+const mongoose = require("mongoose");
+
+const connectMongo = async () => {
+  const uri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/node_fulltask";
   try {
-    await sequelize.authenticate();
-    console.log("Connection has been established successfully.");
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
+    await mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("MongoDB connected:", uri);
+  } catch (err) {
+    console.error("Failed to connect to MongoDB", err);
   }
 };
-module.exports = connectDB;
+
+module.exports = connectMongo;

@@ -1,20 +1,17 @@
 "use strict";
 
-const db = require("../models/index");
 const CRUDService = require("../services/CRUDService");
 
 // hàm getHomePage
 let getHomePage = async (req, res) => {
   try {
-    let data = await db.User.findAll(); // lấy dữ liệu từ models/index
-    // console.log('-------------------');
-    // console.log(data);
-    // console.log('-------------------');
+    let data = await CRUDService.getAllUsers();
     return res.render("homepage.ejs", {
-      data: JSON.stringify(data), // trả dữ liệu data về view
+      data: JSON.stringify(data),
     });
   } catch (e) {
     console.log(e);
+    return res.status(500).send("Server error");
   }
 };
 
@@ -33,13 +30,13 @@ let getFindAllCrud = async (req, res) => {
   let data = await CRUDService.getAllUsers();
   return res.render("users/findAllUser.ejs", {
     datalist: data,
-  }); // gọi view và truyền dữ liệu ra view
+  });
 };
 
 // hàm post CRUD
 let postCRUD = async (req, res) => {
-  let message = await CRUDService.createNewUser(req.body); // gọi service
-  // console.log(req.body); // lấy thông tin body của http request
+  let message = await CRUDService.createNewUser(req.body);
+  // console.log(req.body);
   console.log(message);
   return res.send("Post crud to server");
 };
@@ -59,8 +56,8 @@ let getEditCRUD = async (req, res) => {
 
 let putCRUD = async (req, res) => {
   let data = req.body;
-  let data1 = await CRUDService.updateUserData(data); // update rồi hiển thị lại danh sách user
-  // let data1 = await CRUDService.getAllUsers(); // hiển thị danh sách user
+  let data1 = await CRUDService.updateUserData(data);
+  // let data1 = await CRUDService.getAllUsers();
   return res.render("users/findAllUser.ejs", {
     datalist: data1,
   });
@@ -68,7 +65,7 @@ let putCRUD = async (req, res) => {
 };
 
 let deleteCRUD = async (req, res) => {
-  let id = req.query.id; // ví dụ trên view ?id=1
+  let id = req.query.id;
   if (id) {
     await CRUDService.deleteUserById(id);
     return res.send("Deleted!!!!!!!!!!!");
