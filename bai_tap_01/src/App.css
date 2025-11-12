@@ -1,0 +1,184 @@
+:root {
+  --bg: #f6f8fb;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent: #3b82f6;
+  --accent-600: #2563eb;
+  --shadow: 0 6px 18px rgba(33, 33, 33, 0.08);
+  --radius: 12px;
+  --max-width: 900px;
+}
+
+.root {
+  width: 100vw;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* center vertically */
+}
+
+/* Page layout */
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg, var(--bg), #ffffff);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #0f172a;
+}
+
+/* (duplicate .root removed) */
+
+/* Card */
+.info-card {
+  width: 100%;
+  max-width: 640px; /* fixed max width so card is centered and tidy */
+  margin: 0 auto; /* ensure card centered horizontally */
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px;
+  box-sizing: border-box;
+  text-align: center; /* center content inside card */
+}
+
+.card-header {
+  border-bottom: 1px solid #eef2f7;
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+  text-align: center; /* center header text */
+}
+
+.card-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  letter-spacing: -0.2px;
+}
+.small.muted {
+  color: var(--muted);
+  margin-top: 6px;
+  font-size: 0.95rem;
+}
+
+.card-body {
+  padding-top: 6px;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  align-items: center;
+  justify-content: center; /* center row content horizontally */
+}
+.label {
+  width: auto; /* let label size to content when centered */
+  color: var(--muted);
+  font-weight: 600;
+  text-align: center;
+}
+.value {
+  flex: none;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.note {
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.card-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center; /* center footer content */
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.btn {
+  border: 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn.primary {
+  background: linear-gradient(180deg, var(--accent), var(--accent-600));
+  color: white;
+  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.18);
+}
+
+/* small screens */
+@media (max-width: 520px) {
+  .label {
+    width: auto;
+    font-size: 0.95rem;
+  }
+  .info-card {
+    padding: 18px;
+  }
+  .card-footer {
+    justify-content: center;
+  }
+  /* stack rows vertically on very small screens for clarity */
+  .row {
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+  }
+}
+
+/* Print styles: compact and remove shadows/backgrounds */
+@media print {
+  body {
+    background: white;
+  }
+  .info-card {
+    box-shadow: none;
+    border-radius: 0;
+    padding: 8px;
+  }
+  .card-header {
+    border-bottom: 1px solid #ddd;
+  }
+  .card-footer {
+    display: none;
+  }
+}
+
+/* Preserve existing logo animations if used elsewhere */
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
