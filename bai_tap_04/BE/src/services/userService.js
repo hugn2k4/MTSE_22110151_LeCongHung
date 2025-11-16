@@ -7,7 +7,7 @@ const saltRounds = 10;
 
 const createUserService = async (name, email, password) => {
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ where: { email } });
     if (user) {
       console.log(`>>> user exist, chọn 1 email khác: ${email}`);
       return {
@@ -26,7 +26,7 @@ const createUserService = async (name, email, password) => {
       EC: 0,
       EM: "Tạo user thành công",
       data: {
-        _id: result._id,
+        id: result.id,
         name: result.name,
         email: result.email,
       },
@@ -39,7 +39,7 @@ const createUserService = async (name, email, password) => {
 
 const loginService = async (email, password) => {
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ where: { email } });
     if (user) {
       const isMatchPassword = await bcrypt.compare(password, user.password);
       if (!isMatchPassword) {
@@ -57,7 +57,7 @@ const loginService = async (email, password) => {
         });
         return {
           EC: 0,
-          id: user._id,
+          id: user.id,
           access_token,
           user: {
             name: user.name,
@@ -79,7 +79,7 @@ const loginService = async (email, password) => {
 
 const forgotPasswordService = async (email) => {
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       return {
         EC: 1,
@@ -92,7 +92,7 @@ const forgotPasswordService = async (email) => {
     const hashedPassword = await bcrypt.hash(tempPassword, saltRounds);
 
     // Update user password
-    await User.updateOne({ email }, { password: hashedPassword });
+    await User.update({ password: hashedPassword }, { where: { email } });
 
     // In production, you should send this via email
     console.log(`Temporary password for ${email}: ${tempPassword}`);
@@ -110,7 +110,9 @@ const forgotPasswordService = async (email) => {
 
 const getUserService = async () => {
   try {
-    let result = await User.find({}).select("-password");
+    let result = await User.findAll({
+      attributes: { exclude: ["password"] },
+    });
     return result;
   } catch (e) {
     console.error(">>> Error getUserService:", e);
