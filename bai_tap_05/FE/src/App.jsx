@@ -11,17 +11,27 @@ function App() {
   useEffect(() => {
     const fetchAccount = async () => {
       setAppLoading(true);
-      const res = await axios.get("/v1/api/user");
-      if (res && !res.message) {
-        setAuth({
-          isAuthenticated: true,
-          user: {
-            email: res.email,
-            name: res.name,
-          },
-        });
+      try {
+        const res = await axios.get("/v1/api/user");
+        // axios instance now rejects on non-2xx; when resolved, data is returned
+        if (res && !res.message) {
+          setAuth({
+            isAuthenticated: true,
+            user: {
+              email: res.email,
+              name: res.name,
+            },
+          });
+        } else {
+          // ensure auth is cleared when backend returns an error payload
+          setAuth({ isAuthenticated: false, user: null });
+        }
+      } catch (err) {
+        // on 401 or other errors, treat as unauthenticated
+        setAuth({ isAuthenticated: false, user: null });
+      } finally {
+        setAppLoading(false);
       }
-      setAppLoading(false);
     };
     fetchAccount();
   }, []);

@@ -10,6 +10,7 @@ import HomePage from "./pages/home.jsx";
 import LoginPage from "./pages/login.jsx";
 import RegisterPage from "./pages/register.jsx";
 import UserPage from "./pages/user.jsx";
+import ProductDetailPage from "./pages/product-detail.jsx";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: "forgot-password",
         element: <ForgotPasswordPage />,
+      },
+      {
+        path: "product/:id",
+        element: <ProductDetailPage />,
       },
     ],
   },

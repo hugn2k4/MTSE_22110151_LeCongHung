@@ -10,7 +10,13 @@ const instance = axios.create({
 instance.interceptors.request.use(
   function (config) {
     // Do something before request is sent
-    config.headers.Authorization = `Bearer ${localStorage.getItem("access_token")}`;
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      // ensure no Authorization header is set when there's no token
+      delete config.headers.Authorization;
+    }
     return config;
   },
   function (error) {
@@ -30,7 +36,8 @@ instance.interceptors.response.use(
   function (error) {
     // Any status codes that falls outside of the range of 2xx cause this function to trigger
     // Do something with response error
-    if (error?.response?.data) return error.response?.data;
+    // Prefer rejecting the error so callers can handle it with try/catch
+    if (error?.response?.data) return Promise.reject(error.response.data);
     return Promise.reject(error);
   }
 );

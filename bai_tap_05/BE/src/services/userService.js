@@ -49,8 +49,10 @@ const loginService = async (email, password) => {
         };
       } else {
         const payload = {
+          id: user.id,
           email: user.email,
           name: user.name,
+          role: user.role, // Thêm role vào JWT payload để sử dụng cho authorization
         };
         const access_token = jwt.sign(payload, process.env.JWT_SECRET, {
           expiresIn: process.env.JWT_EXPIRE,
@@ -60,8 +62,10 @@ const loginService = async (email, password) => {
           id: user.id,
           access_token,
           user: {
+            id: user.id,
             name: user.name,
             email: user.email,
+            role: user.role,
           },
         };
       }
