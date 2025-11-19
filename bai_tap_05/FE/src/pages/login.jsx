@@ -1,25 +1,36 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Button, Col, Divider, Form, Input, notification, Row } from "antd";
+import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { createUserApi } from "../util/api";
+import { AuthContext } from "../components/context/auth.context";
+import { loginApi } from "../util/api";
 
-const RegisterPage = () => {
+const LoginPage = () => {
   const navigate = useNavigate();
+  const { auth, setAuth } = useContext(AuthContext);
 
   const onFinish = async (values) => {
-    const { name, email, password } = values;
-    const res = await createUserApi(name, email, password);
+    const { email, password } = values;
+    const res = await loginApi(email, password);
 
-    if (res && res.EC === 0) {
+    if (res && res.id) {
+      localStorage.setItem("access_token", res.access_token);
       notification.success({
-        message: "Đăng Ký Thành Công",
-        description: res.EM || "Tạo tài khoản thành công",
+        message: "LOGIN OK",
+        description: "Success",
       });
-      navigate("/login");
+      setAuth({
+        isAuthenticated: true,
+        user: {
+          email: res.user?.email,
+          name: res.user?.name,
+        },
+      });
+      navigate("/");
     } else {
       notification.error({
-        message: "Đăng Ký Thất Bại",
-        description: res?.EM || "Có lỗi xảy ra khi tạo tài khoản",
+        message: "LOGIN OK",
+        description: res.message || "Error",
       });
     }
   };
@@ -35,16 +46,14 @@ const RegisterPage = () => {
             borderRadius: "5px",
           }}
         >
-          <legend>Đăng Ký Tài Khoản</legend>
+          <legend>Đăng Nhập Hệ Thống</legend>
           <Form name="basic" onFinish={onFinish} autoComplete="off" layout="vertical">
             <Form.Item
               label="Email"
               name="email"
               rules={[
-                {
-                  required: true,
-                  message: "Please input your email!",
-                },
+                { required: true, message: "Vui lòng nhập email!" },
+                { type: "email", message: "Email không hợp lệ!" },
               ]}
             >
               <Input />
@@ -54,41 +63,30 @@ const RegisterPage = () => {
               label="Password"
               name="password"
               rules={[
-                {
-                  required: true,
-                  message: "Please input your password!",
-                },
+                { required: true, message: "Vui lòng nhập mật khẩu!" },
+                { min: 6, message: "Mật khẩu phải có tối thiểu 6 ký tự!" },
               ]}
             >
               <Input.Password />
             </Form.Item>
 
-            <Form.Item
-              label="Name"
-              name="name"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your name!",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-
             <Form.Item>
               <Button type="primary" htmlType="submit">
-                Submit
+                Login
               </Button>
             </Form.Item>
           </Form>
+
+          <div style={{ textAlign: "center", marginBottom: "10px" }}>
+            <Link to="/forgot-password">Quên mật khẩu?</Link>
+          </div>
 
           <Link to="/">
             <ArrowLeftOutlined /> Quay lại trang chủ
           </Link>
           <Divider />
           <div style={{ textAlign: "center" }}>
-            Đã có tài khoản? <Link to="/login">Đăng nhập</Link>
+            Chưa có tài khoản? <Link to="/register">Đăng ký tại đây</Link>
           </div>
         </fieldset>
       </Col>
@@ -96,4 +94,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default LoginPage;
