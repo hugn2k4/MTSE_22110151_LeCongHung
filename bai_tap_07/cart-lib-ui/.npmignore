@@ -1,0 +1,28 @@
+# Development files
+src
+public
+index.html
+vite.config.ts
+tsconfig*.json
+eslint.config.js
+
+# Build artifacts
+node_modules
+*.log
+.DS_Store
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Test files
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx

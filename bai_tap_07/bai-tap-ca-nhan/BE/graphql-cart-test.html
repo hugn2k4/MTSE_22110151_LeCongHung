@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GraphQL Cart API Test</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+
+      header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      h1 {
+        margin-bottom: 10px;
+        font-size: 2.5em;
+      }
+
+      .subtitle {
+        opacity: 0.9;
+        font-size: 1.1em;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .section {
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+      }
+
+      .section h2 {
+        color: #667eea;
+        margin-bottom: 15px;
+        font-size: 1.5em;
+      }
+
+      .auth-section {
+        background: #fff3cd;
+        border-left-color: #ffc107;
+      }
+
+      .auth-section h2 {
+        color: #856404;
+      }
+
+      .input-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+      }
+
+      input:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      textarea {
+        font-family: "Courier New", monospace;
+        min-height: 120px;
+        resize: vertical;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 15px;
+      }
+
+      button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        flex: 1;
+        min-width: 150px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-success {
+        background: #28a745;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: #218838;
+        transform: translateY(-2px);
+      }
+
+      .btn-danger {
+        background: #dc3545;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+      }
+
+      .btn-warning {
+        background: #ffc107;
+        color: #333;
+      }
+
+      .btn-warning:hover {
+        background: #e0a800;
+        transform: translateY(-2px);
+      }
+
+      .response {
+        margin-top: 15px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        border: 2px solid #ddd;
+        font-family: "Courier New", monospace;
+        font-size: 13px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .response.success {
+        background: #d4edda;
+        border-color: #28a745;
+        color: #155724;
+      }
+
+      .response.error {
+        background: #f8d7da;
+        border-color: #dc3545;
+        color: #721c24;
+      }
+
+      .token-display {
+        background: #e7f3ff;
+        padding: 10px;
+        border-radius: 6px;
+        margin-top: 10px;
+        word-break: break-all;
+        font-size: 12px;
+        border: 1px solid #b3d7ff;
+      }
+
+      .info-box {
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 20px;
+      }
+
+      .info-box h3 {
+        color: #0c5460;
+        margin-bottom: 10px;
+      }
+
+      .info-box ul {
+        margin-left: 20px;
+        color: #0c5460;
+      }
+
+      .info-box li {
+        margin-bottom: 5px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 10px;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          margin: 10px;
+        }
+
+        h1 {
+          font-size: 1.8em;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+
+        button {
+          min-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🛒 GraphQL Cart API Tester</h1>
+        <p class="subtitle">Test API giỏ hàng với GraphQL</p>
+      </header>
+
+      <div class="content">
+        <!-- Authentication Section -->
+        <div class="section auth-section">
+          <h2>🔐 Authentication</h2>
+          <div class="input-group">
+            <label>Email:</label>
+            <input type="email" id="loginEmail" value="user@example.com" />
+          </div>
+          <div class="input-group">
+            <label>Password:</label>
+            <input type="password" id="loginPassword" value="password123" />
+          </div>
+          <button class="btn-warning" onclick="login()">Đăng nhập</button>
+          <div id="tokenDisplay"></div>
+          <div id="loginResponse"></div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+          <h3>📋 Hướng dẫn sử dụng:</h3>
+          <ul>
+            <li>Bước 1: Đăng nhập để lấy JWT token</li>
+            <li>Bước 2: Sử dụng các nút bên dưới để test các chức năng</li>
+            <li>Bước 3: Xem kết quả trong phần Response</li>
+            <li>Lưu ý: Token sẽ tự động được thêm vào tất cả các request</li>
+          </ul>
+        </div>
+
+        <!-- Get Cart -->
+        <div class="section">
+          <h2>📦 Xem giỏ hàng</h2>
+          <button class="btn-primary" onclick="getCart()">Xem giỏ hàng</button>
+          <div id="getCartResponse"></div>
+        </div>
+
+        <!-- Add to Cart -->
+        <div class="section">
+          <h2>➕ Thêm sản phẩm vào giỏ hàng</h2>
+          <div class="grid">
+            <div class="input-group">
+              <label>Product ID:</label>
+              <input type="number" id="addProductId" value="1" />
+            </div>
+            <div class="input-group">
+              <label>Số lượng:</label>
+              <input type="number" id="addQuantity" value="1" min="1" />
+            </div>
+          </div>
+          <button class="btn-success" onclick="addToCart()">Thêm vào giỏ hàng</button>
+          <div id="addToCartResponse"></div>
+        </div>
+
+        <!-- Update Cart Item -->
+        <div class="section">
+          <h2>✏️ Cập nhật số lượng</h2>
+          <div class="grid">
+            <div class="input-group">
+              <label>Cart Item ID:</label>
+              <input type="number" id="updateCartItemId" value="1" />
+            </div>
+            <div class="input-group">
+              <label>Số lượng mới:</label>
+              <input type="number" id="updateQuantity" value="2" min="1" />
+            </div>
+          </div>
+          <button class="btn-primary" onclick="updateCartItem()">Cập nhật</button>
+          <div id="updateCartItemResponse"></div>
+        </div>
+
+        <!-- Select Cart Items -->
+        <div class="section">
+          <h2>☑️ Chọn sản phẩm thanh toán</h2>
+          <div class="input-group">
+            <label>Cart Item IDs (cách nhau bởi dấu phẩy):</label>
+            <input type="text" id="selectCartItemIds" value="1,2" />
+          </div>
+          <div class="button-group">
+            <button class="btn-success" onclick="selectCartItems(true)">Chọn</button>
+            <button class="btn-warning" onclick="selectCartItems(false)">Bỏ chọn</button>
+          </div>
+          <div id="selectCartItemsResponse"></div>
+        </div>
+
+        <!-- Checkout -->
+        <div class="section">
+          <h2>💳 Thanh toán</h2>
+          <button class="btn-success" onclick="checkout()">Thanh toán các sản phẩm đã chọn</button>
+          <div id="checkoutResponse"></div>
+        </div>
+
+        <!-- Remove from Cart -->
+        <div class="section">
+          <h2>🗑️ Xóa sản phẩm</h2>
+          <div class="input-group">
+            <label>Cart Item ID:</label>
+            <input type="number" id="removeCartItemId" value="1" />
+          </div>
+          <button class="btn-danger" onclick="removeFromCart()">Xóa</button>
+          <div id="removeFromCartResponse"></div>
+        </div>
+
+        <!-- Custom Query -->
+        <div class="section">
+          <h2>🔧 Custom GraphQL Query</h2>
+          <div class="input-group">
+            <label>GraphQL Query/Mutation:</label>
+            <textarea id="customQuery" placeholder="Nhập GraphQL query hoặc mutation tùy chỉnh...">
+query {
+  getCart {
+    EC
+    EM
+    data {
+      id
+      totalItems
+      totalPrice
+      items {
+        id
+        quantity
+        selected
+        product {
+          name
+          price
+        }
+      }
+    }
+  }
+}</textarea
+            >
+          </div>
+          <button class="btn-primary" onclick="executeCustomQuery()">Thực thi</button>
+          <div id="customQueryResponse"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:8080";
+      const GRAPHQL_ENDPOINT = `${API_URL}/graphql`;
+      let authToken = "";
+
+      // Login
+      async function login() {
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+
+        try {
+          const response = await fetch(`${API_URL}/v1/api/login`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await response.json();
+          displayResponse("loginResponse", data, response.ok);
+
+          if (data.access_token) {
+            authToken = data.access_token;
+            document.getElementById("tokenDisplay").innerHTML = `
+              <div class="token-display">
+                <strong>Token:</strong> ${authToken.substring(0, 50)}...
+              </div>
+            `;
+          }
+        } catch (error) {
+          displayResponse("loginResponse", { error: error.message }, false);
+        }
+      }
+
+      // GraphQL Request Helper
+      async function graphqlRequest(query) {
+        const response = await fetch(GRAPHQL_ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({ query }),
+        });
+
+        return await response.json();
+      }
+
+      // Get Cart
+      async function getCart() {
+        const query = `
+          query {
+            getCart {
+              EC
+              EM
+              data {
+                id
+                userId
+                totalItems
+                totalPrice
+                selectedTotalPrice
+                items {
+                  id
+                  quantity
+                  selected
+                  product {
+                    id
+                    name
+                    price
+                    image
+                    stock
+                  }
+                }
+              }
+            }
+          }
+        `;
+
+        try {
+          const data = await graphqlRequest(query);
+          displayResponse("getCartResponse", data, !data.errors);
+        } catch (error) {
+          displayResponse("getCartResponse", { error: error.message }, false);
+        }
+      }
+
+      // Add to Cart
+      async function addToCart() {
+        const productId = document.getElementById("addProductId").value;
+        const quantity = document.getElementById("addQuantity").value;
+
+        const query = `
+          mutation {
+            addToCart(input: {
+              productId: ${productId}
+              quantity: ${quantity}
+            }) {
+              EC
+              EM
+              data {
+                id
+                quantity
+                selected
+                product {
+                  id
+                  name
+                  price
+                  stock
+                }
+              }
+            }
+          }
+        `;
+
+        try {
+          const data = await graphqlRequest(query);
+          displayResponse("addToCartResponse", data, !data.errors);
+        } catch (error) {
+          displayResponse("addToCartResponse", { error: error.message }, false);
+        }
+      }
+
+      // Update Cart Item
+      async function updateCartItem() {
+        const cartItemId = document.getElementById("updateCartItemId").value;
+        const quantity = document.getElementById("updateQuantity").value;
+
+        const query = `
+          mutation {
+            updateCartItem(input: {
+              cartItemId: ${cartItemId}
+              quantity: ${quantity}
+            }) {
+              EC
+              EM
+              data {
+                id
+                quantity
+                product {
+                  name
+                  price
+                }
+              }
+            }
+          }
+        `;
+
+        try {
+          const data = await graphqlRequest(query);
+          displayResponse("updateCartItemResponse", data, !data.errors);
+        } catch (error) {
+          displayResponse("updateCartItemResponse", { error: error.message }, false);
+        }
+      }
+
+      // Select Cart Items
+      async function selectCartItems(selected) {
+        const cartItemIds = document
+          .getElementById("selectCartItemIds")
+          .value.split(",")
+          .map((id) => id.trim());
+
+        const query = `
+          mutation {
+            selectCartItems(input: {
+              cartItemIds: [${cartItemIds.join(",")}]
+              selected: ${selected}
+            }) {
+              EC
+              EM
+              data {
+                id
+                totalItems
+                selectedTotalPrice
+                items {
+                  id
+                  selected
+                  quantity
+                  product {
+                    name
+                    price
+                  }
+                }
+              }
+            }
+          }
+        `;
+
+        try {
+          const data = await graphqlRequest(query);
+          displayResponse("selectCartItemsResponse", data, !data.errors);
+        } catch (error) {
+          displayResponse("selectCartItemsResponse", { error: error.message }, false);
+        }
+      }
+
+      // Checkout
+      async function checkout() {
+        const query = `
+          mutation {
+            checkout {
+              EC
+              EM
+              data {
+                totalAmount
+                itemCount
+                selectedItems {
+                  id
+                  quantity
+                  product {
+                    name
+                    price
+                  }
+                }
+              }
+            }
+          }
+        `;
+
+        try {
+          const data = await graphqlRequest(query);
+          displayResponse("checkoutResponse", data, !data.errors);
+        } catch (error) {
+          displayResponse("checkoutResponse", { error: error.message }, false);
+        }
+      }
+
+      // Remove from Cart
+      async function removeFromCart() {
+        const cartItemId = document.getElementById("removeCartItemId").value;
+
+        const query = `
+          mutation {
+            removeFromCart(cartItemId: ${cartItemId}) {
+              EC
+              EM
+            }
+          }
+        `;
+
+        try {
+          const data = await graphqlRequest(query);
+          displayResponse("removeFromCartResponse", data, !data.errors);
+        } catch (error) {
+          displayResponse("removeFromCartResponse", { error: error.message }, false);
+        }
+      }
+
+      // Execute Custom Query
+      async function executeCustomQuery() {
+        const query = document.getElementById("customQuery").value;
+
+        try {
+          const data = await graphqlRequest(query);
+          displayResponse("customQueryResponse", data, !data.errors);
+        } catch (error) {
+          displayResponse("customQueryResponse", { error: error.message }, false);
+        }
+      }
+
+      // Display Response Helper
+      function displayResponse(elementId, data, isSuccess) {
+        const element = document.getElementById(elementId);
+        element.innerHTML = `
+          <div class="response ${isSuccess ? "success" : "error"}">
+            ${JSON.stringify(data, null, 2)}
+          </div>
+        `;
+      }
+    </script>
+  </body>
+</html>
