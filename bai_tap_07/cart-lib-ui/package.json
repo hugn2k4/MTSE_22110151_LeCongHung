@@ -1,0 +1,66 @@
+{
+  "author": "Hung Le",
+  "description": "A beautiful React cart library with Material-UI components",
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react-swc": "^4.2.2",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.4",
+    "vite": "^7.2.4",
+    "vite-plugin-dts": "^3.9.1"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/cart-lib-ui.js",
+      "require": "./dist/cart-lib-ui.umd.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "react",
+    "cart",
+    "shopping-cart",
+    "material-ui",
+    "mui",
+    "ecommerce",
+    "ui-library"
+  ],
+  "license": "MIT",
+  "main": "./dist/cart-lib-ui.umd.cjs",
+  "module": "./dist/cart-lib-ui.js",
+  "name": "@hugn10204/cart-lib-ui",
+  "peerDependencies": {
+    "@emotion/react": "^11.0.0",
+    "@emotion/styled": "^11.0.0",
+    "@mui/icons-material": "^5.0.0",
+    "@mui/material": "^5.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hugn2k4/cart-lib-ui"
+  },
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite",
+    "lint": "eslint .",
+    "prepublishOnly": "npm run build",
+    "preview": "vite preview"
+  },
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "version": "1.0.1"
+}
