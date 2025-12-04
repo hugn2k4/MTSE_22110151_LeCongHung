@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>✅ Backend Service Running - Port 8080</title>
+    <style>
+        :root {
+            --success-color: #2ecc71; /* Xanh lá cây đậm cho thành công */
+            --primary-bg: #f5f7fa;   /* Màu nền nhẹ nhàng */
+            --card-bg: #ffffff;      /* Màu nền thẻ */
+            --text-color: #34495e;   /* Màu chữ chính */
+            --code-bg: #ecf0f1;      /* Màu nền code */
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--success-color);
+            font-size: 2.2em;
+            margin-bottom: 5px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background-color: var(--success-color);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 20px 0;
+            animation: pulse 1.5s infinite; /* Hiệu ứng nhấp nháy nhẹ */
+        }
+        
+        /* Hiệu ứng nhấp nháy cho trạng thái ONLNE */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+        }
+
+        .info-block {
+            margin-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+        }
+
+        .info-block p {
+            margin: 10px 0;
+            font-size: 1.05em;
+        }
+
+        code {
+            background-color: var(--code-bg);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+            font-size: 0.95em;
+            color: #c0392b; /* Màu đỏ cho địa chỉ API */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Server Is Running</h1>
+        <p style="color: #95a5a6;">Node.js & Express Service Status</p>
+
+        <div class="status-badge">
+            STATUS: ONLINE
+        </div>
+
+        <div class="info-block">
+            <h2>Endpoints:</h2>
+            <p><strong>Health Check:</strong> <code>/</code></p>
+            <p><strong>API Version 1:</strong> <code>/v1/api/users</code></p>
+            <p>
+                Server Port: 
+                <code style="color: #3498db;">8080</code>
+            </p>
+        </div>
+        <p style="margin-top: 30px; font-size: 0.85em; color: #95a5a6;">
+            Deployment successful. Ready to receive requests.
+        </p>
+    </div>
+</body>
+</html>
